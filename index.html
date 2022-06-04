@@ -1,0 +1,237 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+<script>
+$(function () {
+    $('input[name=ele_day_work]').on('change',function(){
+    	$('input[name=net_day_work]').val([$(this).val()]);
+    });
+    $('input[name=ele_day_full]').on('change',function(){
+    	$('input[name=net_day_full]').val([$(this).val()]);
+    });
+    $('input[name=net_day_work]').on('change',function(){
+    	$('input[name=ele_day_work]').val([$(this).val()]);
+    });
+    $('input[name=net_day_full]').on('change',function(){
+    	$('input[name=ele_day_full]').val([$(this).val()]);
+    });
+    
+    $('.input-group input').on('change',function(){
+    	denki_calc();
+    	net_calc();
+    });
+    
+    function denki_calc()
+    {
+    	// 電気代
+    	let ele_price = $('input[name=ele_price]').val();
+    	// 自宅床面積
+    	let ele_area_full = $('input[name=ele_area_full]').val();
+    	// 業務部屋面積
+    	let ele_area_work = $('input[name=ele_area_work]').val();
+    	// 在宅勤務日数
+    	let ele_day_work = $('input[name=ele_day_work]').val();
+    	// 該当月日数
+    	let ele_day_full = $('input[name=ele_day_full]').val();
+    	
+    	if(
+    		ele_price == '' ||
+    		ele_area_full == '' ||
+    		ele_area_work == '' ||
+    		ele_day_work == '' ||
+    		ele_day_full == ''
+    	){
+    		$('input[name=ele_calc]').val(['']);
+    		return false;
+    	}
+    	
+    	let ele_calc = (ele_price * (ele_area_work / ele_area_full ) * (ele_day_work / ele_day_full)) / 2;
+    	ele_calc = Math.round(ele_calc);
+    	$('input[name=ele_calc]').val([ele_calc]);
+    }
+    
+    function net_calc()
+    {
+    	// インターネット回線料金
+    	let net_price = $('input[name=net_price]').val();
+    	// 在宅勤務日数
+    	let net_day_work = $('input[name=net_day_work]').val();
+    	// 該当月日数
+    	let net_day_full = $('input[name=net_day_full]').val();
+    	
+    	if(
+    		net_price == '' ||
+    		net_day_work == '' ||
+    		net_day_full == ''
+    	){
+    		$('input[name=net_calc]').val(['']);
+    		return false;
+    	}
+    	let net_calc = (net_price * (net_day_work / net_day_full)) / 2;
+    	net_calc = Math.round(net_calc);
+    	$('input[name=net_calc]').val([net_calc]);
+    }
+    
+    // 前月の日数を入れる
+    $('.day_set').on('click',function(){
+    	var dt = new Date(); // 「今日」のインスタンスを取得
+    	let DateObj = new Date(dt.getFullYear(), dt.getMonth(), 0);
+    
+    	
+    	$('input[name=ele_day_full]').val([DateObj.getDate()]);
+    	$('input[name=net_day_full]').val([DateObj.getDate()]);
+    });
+    
+    // リセットボタン
+    $('.reset').on('click',function()
+    {
+    	// 電気代
+    	$('input[name=ele_calc]').val(['']);
+    	$('input[name=ele_price]').val(['']);
+    	// 自宅床面積
+    	$('input[name=ele_area_full]').val(['']);
+    	// 業務部屋面積
+    	$('input[name=ele_area_work]').val(['']);
+    	// 在宅勤務日数
+    	$('input[name=ele_day_work]').val(['']);
+    	// 該当月日数
+    	$('input[name=ele_day_full]').val(['']);
+    	
+    	// ネット代リセット
+    	$('input[name=net_calc]').val(['']);
+    	$('input[name=net_price]').val(['']);
+    	// 在宅勤務日数
+    	$('input[name=net_day_work]').val(['']);
+    	// 該当月日数
+    	$('input[name=net_day_full]').val(['']);
+    });
+    
+    $('.cookie_setting').on('click',function()
+    {
+		var target_list = 
+		[
+			// 会社経費申請可能額：電気代
+			'ele_calc',
+			// 電気料金
+			'ele_price',
+			// 自宅床面積
+			'ele_area_full',
+			// 業務部屋面積
+			'ele_area_work',
+			// 在宅勤務日数,
+			'ele_day_work' ,
+			// 該当月日数
+			'ele_day_full' ,
+			
+			// 会社経費申請可能額：インターネット料金
+			'net_calc',
+			// インターネッと料金
+			'net_price',
+			// 在宅勤務日数
+			'net_day_work' ,
+			// 該当月日数
+			'net_day_full' 
+		];
+		var exp = new Date();
+		exp.setMonth(exp.getMonth() + 3);
+		target_list.forEach(function(value)
+		{
+			var temp_value = $('input[name=' + value + ']').val();
+			document.cookie = value + '=' +temp_value + ';expires=' + exp.toUTCString();
+		});
+    });
+    
+    $('.cookie_set').on('click',function(){
+    	var cookies = getCookies();
+    	
+    	// 電気代
+    	$('input[name=ele_calc]').val([cookies.ele_calc]);
+    	$('input[name=ele_price]').val([cookies.ele_price]);
+    	// 自宅床面積
+    	$('input[name=ele_area_full]').val([cookies.ele_area_full]);
+    	// 業務部屋面積
+    	$('input[name=ele_area_work]').val([cookies.ele_area_work]);
+    	// 在宅勤務日数
+    	$('input[name=ele_day_work]').val([cookies.ele_day_work]);
+    	// 該当月日数
+    	$('input[name=ele_day_full]').val([cookies.ele_day_full]);
+    	
+    	// ネット代リセット
+    	$('input[name=net_calc]').val([cookies.net_calc]);
+    	$('input[name=net_price]').val([cookies.net_price]);
+    	// 在宅勤務日数
+    	$('input[name=net_day_work]').val([cookies.net_day_work]);
+    	// 該当月日数
+    	$('input[name=net_day_full]').val([cookies.net_day_full]);
+    });
+    
+    function getCookies(){
+    	var obj = {};
+	    var cookies = document.cookie; //全てのcookieを取り出して
+		var cookiesArray = cookies.split(';'); // ;で分割し配列に
+
+		for(var c of cookiesArray){ //一つ一つ取り出して
+		    var cArray = c.split('='); //さらに=で分割して配列に
+		    obj[cArray[0].trim()] = cArray[1].trim();
+		}
+		return obj;
+	}
+});
+</script>
+<style>
+.chosei
+{
+	line-height: 39px;
+    font-size: x-large;
+}
+</style>
+</head>
+    <body>
+        <div class="container">
+            <p class="h2 text-center">社内申請計算</p>
+            <p class="h5 text-center">～電気代・ネット代申請計算～</p>
+            <hr>
+            <!--<p class="h6 site-tour"><i class="fas fa-question-circle"></i>&nbsp;how to user?&nbsp;<small>(click here)</small></p>
+            <hr>-->
+            <button class="btn btn-primary day_set">前月の日数セットする</button>
+            <button class="btn btn-danger cookie_setting">データ保存</button>
+            <button class="btn btn-warning cookie_set">前回データセット</button>
+            <button class="btn btn-light reset">リセット</button>
+            <p class="h5 text-center">電気代</p>
+            <div class="input-group mb-3 chosei">
+            	<input type="text" name="ele_calc" class="form-control" placeholder="電気会社負担額" readonly>円 ＝
+				<input type="text" name="ele_price" class="form-control" placeholder="電気使用料">&nbsp;×&nbsp;
+				（
+					<input type="text" name="ele_area_work" class="form-control" placeholder="業務部屋の床面積">
+					&nbsp;÷&nbsp;
+					<input type="text" name="ele_area_full" class="form-control" placeholder="自宅床面積">
+				）
+				&nbsp;×&nbsp;
+				（
+					<input type="text" name="ele_day_work" class="form-control" placeholder="在宅勤務日数">
+					&nbsp;÷&nbsp;
+					<input type="text" name="ele_day_full" class="form-control" placeholder="該当月の日数">
+				）
+				&nbsp;÷&nbsp;２
+			</div>
+            
+            <p class="h5 text-center">ネット代</p>
+            <div class="input-group mb-3 chosei">
+            	<input type="text" name="net_calc" class="form-control" placeholder="ネット代会社負担額" readonly>円 ＝
+				<input type="text" name="net_price" class="form-control" placeholder="インターネット回線月額基本使用料">&nbsp;×&nbsp;
+				（
+					<input type="text" name="net_day_work" class="form-control" placeholder="在宅勤務日数">
+					&nbsp;×&nbsp;
+					<input type="text" name="net_day_full" class="form-control" placeholder="該当月の日数">
+				）
+				&nbsp;÷&nbsp;２
+			</div>
+        
+    </body>
+</html>
