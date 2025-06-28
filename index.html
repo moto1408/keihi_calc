@@ -54,6 +54,12 @@ $(function () {
     	let ele_calc = (ele_price * (ele_area_work / ele_area_full ) * (ele_day_work / ele_day_full)) / 2;
     	ele_calc = Math.round(ele_calc);
     	$('input[name=ele_calc]').val([ele_calc]);
+
+		const formatter = new Intl.NumberFormat('ja-JP');
+	
+		let ele_template_text = '';
+		ele_template_text = `テレワーク日数：${ele_day_work}日\n計算式：${formatter.format(ele_calc)}円 = ${formatter.format(ele_price)}(${ele_area_work} ÷ ${ele_area_full} ) × ( ${ele_day_work} ÷ ${ele_day_full})  ÷ 2`;
+		$('.ele_template').val(ele_template_text);
     }
     
     function net_calc()
@@ -76,6 +82,12 @@ $(function () {
     	let net_calc = (net_price * (net_day_work / net_day_full)) / 2;
     	net_calc = Math.round(net_calc);
     	$('input[name=net_calc]').val([net_calc]);
+		
+		const formatter = new Intl.NumberFormat('ja-JP');
+	
+		let net_template_text = '';
+		net_template_text = 'テレワーク日数：' + net_day_work + '日\n計算式：' + formatter.format(net_calc) + '円 = ' + formatter.format(net_price) + ' × (' + net_day_work + ' ÷ ' + net_day_full  + ')  ÷ 2';
+		$('.net_template').val(net_template_text);
     }
     
     // 前月の日数を入れる
@@ -170,6 +182,18 @@ $(function () {
     	// 該当月日数
     	$('input[name=net_day_full]').val([cookies.net_day_full]);
     });
+
+	// 「テキストコピー」電気
+	$('.ele_template_copy').on('click', function(){
+		let copy_text = $('.ele_template').val();
+		navigator.clipboard.writeText(copy_text);
+	});
+
+	// 「テキストコピー」ネット
+	$('.net_template_copy').on('click', function(){
+		let copy_text = $('.net_template').val();
+		navigator.clipboard.writeText(copy_text);
+	});
     
     function getCookies(){
     	var obj = {};
@@ -189,6 +213,13 @@ $(function () {
 {
 	line-height: 39px;
     font-size: x-large;
+}
+textarea {
+	width: 100%;
+}
+input::placeholder,
+textarea::placeholder {
+  font-size: 0.8em; /* 80%のサイズ */
 }
 </style>
 </head>
@@ -220,6 +251,8 @@ $(function () {
 				）
 				&nbsp;÷&nbsp;２
 			</div>
+			<textarea class="ele_template"></textarea>
+			<p class="btn btn-primary ele_template_copy">テキストコピー</p>
             
             <p class="h5 text-center">ネット代</p>
             <div class="input-group mb-3 chosei">
@@ -227,11 +260,27 @@ $(function () {
 				<input type="text" name="net_price" class="form-control" placeholder="インターネット回線月額基本使用料">&nbsp;×&nbsp;
 				（
 					<input type="text" name="net_day_work" class="form-control" placeholder="在宅勤務日数">
-					&nbsp;×&nbsp;
+					&nbsp;÷&nbsp;
 					<input type="text" name="net_day_full" class="form-control" placeholder="該当月の日数">
 				）
 				&nbsp;÷&nbsp;２
 			</div>
+			<textarea class="net_template"></textarea>
+			<button class="btn btn-primary net_template_copy">テキストコピー</button>
+			<div class="mt-5">
+				<h5>インボイス番号</h5>
+				<hr>
+				<p>東京電力：T8010001166930</p>
+				<p>東京ガス：T6010401020516</p>
+				<hr>
+				<p>中部電力：T2180001135973</p>
+				<p>東邦ガス：T2180001022387</p>
+				<hr>
+				<p>関西電力：T3120001059632</p>
+				<p>関西ガス：T3120001059632 </p>
+			</div>
+		</div>
+		
         
     </body>
 </html>
