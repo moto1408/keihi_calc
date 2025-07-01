@@ -58,7 +58,7 @@ $(function () {
 		const formatter = new Intl.NumberFormat('ja-JP');
 	
 		let ele_template_text = '';
-		ele_template_text = `テレワーク日数：${ele_day_work}日\n計算式：${formatter.format(ele_calc)}円 = ${formatter.format(ele_price)}(${ele_area_work} ÷ ${ele_area_full} ) × ( ${ele_day_work} ÷ ${ele_day_full})  ÷ 2`;
+		ele_template_text = `テレワーク日数：${ele_day_work}日\n計算式：${formatter.format(ele_calc)}円 = ${formatter.format(ele_price)} × (${ele_area_work} ÷ ${ele_area_full} ) × ( ${ele_day_work} ÷ ${ele_day_full})  ÷ 2`;
 		$('.ele_template').val(ele_template_text);
     }
     
