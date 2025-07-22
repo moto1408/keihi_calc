@@ -26,7 +26,40 @@ $(function () {
     	denki_calc();
     	net_calc();
     });
+
+	const currentUrl = new URL(window.location.href);
+	const searchParams = currentUrl.searchParams;
+	let list = [
+		'ele_price',
+		'ele_area_work',
+		'ele_area_full',
+		'ele_day_work',
+		'ele_day_full',
+		'net_price',
+		'net_day_work',
+		'net_day_full',
+	];
+	list.forEach(function (val) {
+		$('input[name=' +  val + ']').val(searchParams.get(val));
+	});
+	denki_calc();
+	net_calc();
+
+	$('.url_get').on('click', () => {
+		console.log('click !');
+		let url = location.origin + location.pathname + '?';
+		let obj = {};
+		list.forEach(function (val) {
+			console.log({val});
+			obj[val] = $('input[name=' +  val + ']').val();
+			url = url + val + '=' + $('input[name=' +  val + ']').val() + '&';
+		});
+		
+		$('input[name=url]').val(url);
+	});
+	location.origin + location.pathname;
     
+
     function denki_calc()
     {
     	// 電気代
@@ -174,7 +207,7 @@ $(function () {
     	// 該当月日数
     	$('input[name=ele_day_full]').val([cookies.ele_day_full]);
     	
-    	// ネット代リセット
+    	// ネット代
     	$('input[name=net_calc]').val([cookies.net_calc]);
     	$('input[name=net_price]').val([cookies.net_price]);
     	// 在宅勤務日数
@@ -234,6 +267,8 @@ textarea::placeholder {
             <button class="btn btn-danger cookie_setting">データ保存（Cookie）</button>
             <button class="btn btn-warning cookie_set">前回データセット</button>
             <button class="btn btn-light reset">リセット</button>
+			<button class="btn btn-info url_get">入力値保持URL出力</button>
+			<input type="text" name="url" class="form-control">
             <p class="h5 text-center">電気代</p>
             <div class="input-group mb-3 chosei">
             	<input type="text" name="ele_calc" class="form-control" placeholder="電気会社負担額" readonly>円 ＝
@@ -271,13 +306,12 @@ textarea::placeholder {
 				<h5>インボイス番号</h5>
 				<hr>
 				<p>東京電力：T8010001166930</p>
-				<p>東京ガス：T6010401020516</p>
 				<hr>
 				<p>中部電力：T2180001135973</p>
-				<p>東邦ガス：T2180001022387</p>
 				<hr>
 				<p>関西電力：T3120001059632</p>
-				<p>関西ガス：T3120001059632 </p>
+				<hr>
+				<p>ビッグローブ：T2010001146797</p>
 			</div>
 		</div>
 		
